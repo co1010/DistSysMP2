@@ -2,10 +2,8 @@ package main
 
 import (
 	"MP2/utils"
-	"bufio"
 	"github.com/akamensky/argparse"
 	"os"
-	"strings"
 )
 
 func main() {
@@ -17,29 +15,23 @@ func main() {
 	err := parser.Parse(os.Args)
 	utils.CheckError(err)
 
+	// Look for server keyword- start server if it's there
 	if (*serverInfo)[0] == "server" {
 		startServer((*serverInfo)[1])
 	}
 
+	// Wrap command line information into neat User struct
 	user := utils.User{IP: (*serverInfo)[0], PORT: (*serverInfo)[1], Username: (*serverInfo)[2]}
 
+	// Connect to the sever
 	conn := connectToServer(user)
 
+	// Register with the server
 	registerWithServer(conn, user.Username)
 
+	// Goroutine to read incoming messages from server
 	go incomingMessages(conn)
 
-	for {
-		reader := bufio.NewReader(os.Stdin)
-		text, _ := reader.ReadString('\n')
-		input := strings.Split(text, " ")
-		if input[0] == "send" {
-			to := input[1]
-			from := user.Username
-			content := strings.Join(input[2:], " ")
-			content = strings.TrimRight(content, "\r\n")
-			message := utils.Message{To: to, From: from, Content: content, Register: false}
-			go utils.SendMessage(conn, message)
-		}
-	}
+	// Read client command line input
+	readClientCommands(conn, user.Username)
 }
