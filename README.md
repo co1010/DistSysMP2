@@ -15,6 +15,7 @@ To send a message to another user type
 > send [USERNAME] [MESSAGE]
 
 Where [USERNAME] is the username of the person you want to send the message to and [MESSAGE] is the message you want to send.
+To exit the program simply type EXIT and hit enter.
 
 # System Overview
 A central server handles all connections using goroutines. When a client connects they register their username with their connection. When the server receives a message from a client it looks up the username to see if it has a connection. When the server gets the exit command it messages all clients to close their connections, then closes the server. When clients get the exit command it messages the server which closes that single connection and removes the user from the register. The client then exits. The functionality of registration and exiting is built into the Message struct.
