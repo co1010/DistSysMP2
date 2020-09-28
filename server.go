@@ -47,8 +47,8 @@ func handleConnection(conn net.Conn) {
 
 		// Use Message's exit and register fields to determine what to do
 		if message.Exit {
-			// Set the value of the user key to nil, close the connection, and break the loop.
-			connections[message.From] = nil
+			// Delete the user from connections, close the connection, and break the loop.
+			delete(connections, message.From)
 			conn.Close()
 			fmt.Printf("User %s disconnected\n", message.From)
 			break
@@ -91,6 +91,7 @@ func readServerCommands(ln net.Listener) {
 // Closes all active connections
 func terminateConnections() {
 	for _, connection := range connections {
+		// Error handling
 		if connection != nil {
 			// Send message to clients with the exit flag true
 			message := utils.Message{Exit: true}
