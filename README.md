@@ -3,14 +3,17 @@
 # To Run
 First create a server. To do so, navigate to /DistSysMP2 and type
 > go run . -s server -s [PORT]
+
 Where [PORT] is the port you want to run the server on.
 To shut down the server type EXIT and hit enter.
 
 To create clients navigate to /DistSysMP2 and type
 > go run . -s [IP] -s [PORT] -s [USERNAME]
+
 Where [IP] and [PORT] are the ip and port of the server you want to connect to, and [USERNAME] is the username you wish to use.
 To send a message to another user type
 > send [USERNAME] [MESSAGE]
+
 Where [USERNAME] is the username of the person you want to send the message to and [MESSAGE] is the message you want to send.
 
 # System Overview
