@@ -9,7 +9,7 @@ import (
 )
 
 // Connections is global because almost every server function uses it
-var connections map[string]*net.Conn
+var connections map[string]net.Conn
 
 // Starts a TCP server on the given port
 func startServer(port string) {
@@ -17,7 +17,7 @@ func startServer(port string) {
 	utils.CheckError(err)
 
 	// Initialize connections as a map with string keys and net.Conn pointers as the values
-	connections = make(map[string]*net.Conn)
+	connections = make(map[string]net.Conn)
 
 	// Goroutine to accept incoming connections
 	go acceptConnections(ln)
@@ -54,7 +54,7 @@ func handleConnection(conn net.Conn) {
 			break
 		} else if message.Register {
 			// Register the user in the connections map
-			connections[message.From] = &conn
+			connections[message.From] = conn
 			fmt.Printf("User %s connected\n", message.From)
 		} else {
 			// User connections map to find out who the message is going to
@@ -62,9 +62,9 @@ func handleConnection(conn net.Conn) {
 			// Error handling if the user doesn't exist
 			if to == nil {
 				errorMessage := utils.Message{From: "Error", Content: "That user is not connected to this server"}
-				utils.SendMessage(*(connections)[message.From], errorMessage)
+				utils.SendMessage((connections)[message.From], errorMessage)
 			} else {
-				utils.SendMessage(*to, message)
+				utils.SendMessage(to, message)
 			}
 		}
 	}
@@ -94,7 +94,7 @@ func terminateConnections() {
 		if connection != nil {
 			// Send message to clients with the exit flag true
 			message := utils.Message{Exit: true}
-			utils.SendMessage(*connection, message)
+			utils.SendMessage(connection, message)
 		}
 	}
 }
